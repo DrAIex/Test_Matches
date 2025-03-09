@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useSWR from 'swr';
 import type { MatchesResponse } from '@/types/match';
 
@@ -16,16 +17,28 @@ const fetcher = async (url: string): Promise<MatchesResponse> => {
   }
 };
 
-export function useMatches() {
-  const { data, error, isLoading, mutate } = useSWR<MatchesResponse>(
+
+export const useMatches = () => {
+  const { data, error, mutate, isLoading } = useSWR<MatchesResponse>(
     API_URL,
     fetcher
   );
-
+  
+  const [localLoading, setLocalLoading] = useState(false);
+  
+  const refresh = async () => {
+    setLocalLoading(true);
+    try {
+      await mutate();
+    } finally {
+      setLocalLoading(false);
+    }
+  };
+  
   return {
     matches: data?.data.matches ?? [],
-    isLoading,
+    isLoading: isLoading || localLoading,
     isError: error,
-    refresh: mutate,
+    refresh,
   };
-} 
+}

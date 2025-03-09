@@ -6,8 +6,8 @@ import { Providers } from './providers';
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-  title: 'Матч-трекер',
-  description: 'Приложение для отслеживания матчей в реальном времени',
+  title: 'Match Tracker',
+  description: 'Real-time match tracking app',
 };
 
 export default function RootLayout({
