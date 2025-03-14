@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useSWR from 'swr';
 import type { MatchesResponse } from '@/types/match';
 
 const API_URL = 'https://app.ftoyd.com/fronttemp-service/fronttemp';
+const WEBSOCKET_URL = 'wss://app.ftoyd.com/fronttemp-service/ws';
 
 const fetcher = async (url: string): Promise<MatchesResponse> => {
   try {
@@ -16,7 +17,6 @@ const fetcher = async (url: string): Promise<MatchesResponse> => {
     throw error;
   }
 };
-
 
 export const useMatches = () => {
   const { data, error, mutate, isLoading } = useSWR<MatchesResponse>(
@@ -34,6 +34,33 @@ export const useMatches = () => {
       setLocalLoading(false);
     }
   };
+
+  useEffect(() => {
+    const socket = new WebSocket(WEBSOCKET_URL);
+
+    socket.onopen = () => {
+      console.log('WebSocket connection established');
+    };
+
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === 'update_matches') {
+        mutate({ ok: true, data: { matches: message.data } }, false);
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    socket.onclose = (event) => {
+      console.log('WebSocket closed:', event);
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, [mutate]);
   
   return {
     matches: data?.data.matches ?? [],

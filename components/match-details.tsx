@@ -7,11 +7,13 @@ type PlayerRowProps = {
   kills: number;
 }
 
+//px-[20%] md:px-2 
+
 const PlayerRow = ({ username, kills }: PlayerRowProps) => (
-  <div className="flex justify-between gap-2 bg-[#101318] px-2 py-2 w-full">
+  <div className="flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 bg-[#101318] px-2 py-2 w-full">
     <div className="flex items-center px-2 py-2">
       <Image src={avatar} alt='Player avatar' width={24} height={24} />
-      <span className=" px-2" >{username}</span>
+      <span className="px-2">{username}</span>
     </div>
     <div className="flex items-center gap-2 px-2">
       <span className="text-[#808080]">Убийств:</span>
@@ -41,7 +43,7 @@ const TeamStats = ({ players, points, total_kills, place }: TeamStatsProps) => (
         />
       ))}
     </div>
-    <div className="bg-[#101318] mt-4 flex justify-between text-sm px-4 2xl:px-20 py-4 flex-wrap 2xl:flex-nowrap">
+    <div className="bg-[#101318] mt-4 flex flex-col md:flex-row justify-center md:justify-between items-center text-sm px-4 2xl:px-20 py-4 flex-wrap 2xl:flex-nowrap">
       <span className="text-[#808080]">Points: 
         <span className="text-[#fff] px-2">+{points}</span>
       </span>
